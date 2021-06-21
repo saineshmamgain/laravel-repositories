@@ -2,6 +2,7 @@
     "name": "saineshmamgain/laravel-repositories",
     "type": "project",
     "license": "MIT",
+    "description": "A package to create repositories in your laravel applications.",
     "authors": [
         {
             "name": "saineshmamgain",
