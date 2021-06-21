@@ -137,7 +137,7 @@ __List of hooks are:__
 
 1. For `create` method `beforeCreate` and `afterCreate`.
 2. For `update` method `beforeUpdate` and `afterUpdate`.
-3. For `destroy` method `beforeDestroy` and `afterDestroy`.
+3. For `destroy` method `beforeDestroy`.
 4. For `restore` method `afterRestore`.
 5. Additional `beforeSave` and `afterSave` hooks which work on both `create` and `update` methods.
 
