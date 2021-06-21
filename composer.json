@@ -15,11 +15,25 @@
             "SaineshMamgain\\LaravelRepositories\\" : "src/"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "SaineshMamgain\\LaravelRepositories\\Tests\\" : "tests/"
+        }
+    },
     "extra": {
         "laravel": {
             "providers": [
                 "SaineshMamgain\\LaravelRepositories\\LaravelRepositoryServiceProvider"
             ]
         }
+    },
+    "require-dev": {
+        "orchestra/testbench": "^6.18",
+        "phpunit/phpunit": "^9.5",
+        "nunomaduro/collision": "^5.3"
+    },
+    "scripts": {
+        "test": "./vendor/bin/testbench package:test",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
     }
 }
