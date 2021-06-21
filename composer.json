@@ -1,0 +1,24 @@
+{
+    "name": "saineshmamgain/laravel-repositories",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "saineshmamgain",
+            "email": "saineshmamgain@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "SaineshMamgain\\LaravelRepositories\\" : "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SaineshMamgain\\LaravelRepositories\\LaravelRepositoryServiceProvider"
+            ]
+        }
+    }
+}

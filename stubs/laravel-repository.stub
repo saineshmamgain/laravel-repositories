@@ -1,0 +1,67 @@
+<?php
+namespace DummyNamespace;
+
+use SaineshMamgain\LaravelRepositories\Exceptions\RepositoryException;
+use SaineshMamgain\LaravelRepositories\Repositories\BaseRepository;
+use Illuminate\Database\Eloquent\Model;
+use {{DummyModelNamespace}};
+
+class DummyClass extends BaseRepository
+{
+    /**
+     * @var {{DummyModel}} $model
+     */
+    protected $model;
+
+    public function __construct({{DummyModel}} $model = null)
+    {
+        if (empty($model)){
+            $model = new {{DummyModel}}();
+        }elseif (!$model instanceof {{DummyModel}}){
+            throw new RepositoryException(get_class($model) . ' is not an instance of {{DummyModel}} model');
+        }
+        parent::__construct($model);
+    }
+
+    /**
+     * @return {{DummyModel}}|Model
+     * @throws RepositoryException
+     */
+    public function create($fields)
+    {
+        return parent::create($fields);
+    }
+
+    /**
+     * @throws RepositoryException
+     * @return {{DummyModel}}[]|Model[]
+     */
+    public function createMany($rows)
+    {
+        return parent::createMany($rows);
+    }
+
+    /**
+     * @return {{DummyModel}}|Model
+     */
+    public function update($fields)
+    {
+        return parent::update($fields);
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function destroy($permanent = false)
+    {
+        return parent::destroy($permanent);
+    }
+
+    /**
+     * @return {{DummyModel}}|Model
+     */
+    public function restore()
+    {
+        return parent::restore();
+    }
+}
