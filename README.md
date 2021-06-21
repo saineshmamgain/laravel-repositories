@@ -2,6 +2,9 @@
 
 Laravel Repositories is a Laravel package that makes creating and managing repositories a breeze.
 
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/saineshmamgain/laravel-repositories?style=flat-square)
+[![Latest Stable Version](http://poser.pugx.org/saineshmamgain/laravel-repositories/v)](https://packagist.org/packages/saineshmamgain/laravel-repositories) [![Total Downloads](http://poser.pugx.org/saineshmamgain/laravel-repositories/downloads)](https://packagist.org/packages/saineshmamgain/laravel-repositories) [![Latest Unstable Version](http://poser.pugx.org/saineshmamgain/laravel-repositories/v/unstable)](https://packagist.org/packages/saineshmamgain/laravel-repositories) [![License](http://poser.pugx.org/saineshmamgain/laravel-repositories/license)](https://packagist.org/packages/saineshmamgain/laravel-repositories)
+
 ## Installation
 
 Use the package manager [composer](https://getcomposer.org/download/) to install the package.
