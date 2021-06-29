@@ -106,7 +106,7 @@ abstract class BaseRepository
      *
      * @return Model
      */
-    protected function save($fields)
+    public function save($fields)
     {
         $original_fields = $fields;
         $fields = $this->beforeSave($fields);
@@ -283,5 +283,20 @@ abstract class BaseRepository
     public function query(): Builder
     {
         return $this->model->newQuery();
+    }
+
+    /**
+     * @param array $fields
+     * @return Model
+     *
+     * Function that is not aware if the model is a new instance or already existing instance.
+     *
+     */
+    public function touch($fields)
+    {
+        $original_fields = $fields;
+        $fields = $this->beforeSave($fields);
+        $this->save($fields);
+        return $this->afterSave($original_fields, $fields);
     }
 }
