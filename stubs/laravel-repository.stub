@@ -64,4 +64,12 @@ class DummyClass extends BaseRepository
     {
         return parent::restore();
     }
+
+    /**
+     * @return {{DummyModel}}|Model
+     */
+    public function touch($fields)
+    {
+        return parent::touch($fields);
+    }
 }
