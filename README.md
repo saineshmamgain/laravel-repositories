@@ -238,8 +238,7 @@ protected function afterRestore()
 
 ## What's Next
 
-1. Writing tests (Need help in writing tests).
-2. Optimizing code where necessary.
+1. Covering More Tests
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.

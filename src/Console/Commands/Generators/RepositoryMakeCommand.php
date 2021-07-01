@@ -4,7 +4,6 @@ namespace SaineshMamgain\LaravelRepositories\Console\Commands\Generators;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Database\Eloquent\Model;
-use InvalidArgumentException;
 use Symfony\Component\Console\Input\InputOption;
 
 /**
@@ -21,7 +20,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:repository {name}';
+    protected $signature = 'make:repository {model}';
 
     /**
      * The console command description.
@@ -105,25 +104,22 @@ class RepositoryMakeCommand extends GeneratorCommand
 
     private function setRepositoryClass()
     {
-        $name = $this->argument('name');
+        $name = $this->argument('model');
 
         $name = str_ireplace(['repository', 'Repository'], '', $name);
 
         $fullyQualifiedModelNameSpace = '';
 
-        if (file_exists(base_path('app/Models/'.$name.'.php'))) {
-            $fullyQualifiedModelNameSpace = 'App\\Models\\'.$name;
-        }
-        if (file_exists(base_path('app/'.$name.'.php'))) {
-            $fullyQualifiedModelNameSpace = 'App\\'.$name;
-        }
-
-        if (!(new $fullyQualifiedModelNameSpace() instanceof Model)) {
-            throw new \Exception($name.' is not a valid model');
+        if (file_exists(app_path('Models/'.$name.'.php'))) {
+            $fullyQualifiedModelNameSpace = $this->qualifyModel($name);
         }
 
         if (empty($fullyQualifiedModelNameSpace)) {
             throw new \Exception('Model '.$name.' doesn\'t exist');
+        }
+
+        if (! app($fullyQualifiedModelNameSpace) instanceof Model){
+            throw new \Exception('Model '.$name.' is not a valid model');
         }
 
         $this->model = $name;
@@ -146,10 +142,6 @@ class RepositoryMakeCommand extends GeneratorCommand
      */
     protected function replaceClass($stub, $name)
     {
-        if (!$this->argument('name')) {
-            throw new InvalidArgumentException('Missing required argument model name');
-        }
-
         $stub = parent::replaceClass($stub, $name);
 
         $stub = str_replace('{{DummyModel}}', $this->model, $stub);

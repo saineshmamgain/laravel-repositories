@@ -17,7 +17,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "SaineshMamgain\\LaravelRepositories\\Tests\\" : "tests/"
+            "Tests\\": "tests/",
+            "App\\": "vendor/orchestra/testbench-core/laravel/app"
         }
     },
     "extra": {
@@ -34,6 +35,9 @@
     },
     "scripts": {
         "test": "./vendor/bin/testbench package:test",
-        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+        "post-autoload-dump": [
+            "@php ./vendor/bin/testbench package:discover --ansi"
+        ]
     }
 }
