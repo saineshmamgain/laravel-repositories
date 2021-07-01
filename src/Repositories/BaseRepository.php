@@ -14,19 +14,21 @@ use SaineshMamgain\LaravelRepositories\Exceptions\RepositoryException;
 abstract class BaseRepository
 {
     /**
-     * @var Model $model
+     * @var Model
      */
     protected $model;
 
     /**
      * Persist model in database.
-     * @var bool $persist
+     *
+     * @var bool
      */
     protected $persist = true;
 
     /**
      * Refresh model after insert or update.
-     * @var bool $refresh
+     *
+     * @var bool
      */
     protected $refresh = false;
 
@@ -40,6 +42,7 @@ abstract class BaseRepository
 
     /**
      * @param Model|null $model
+     *
      * @return static
      */
     public static function init($model = null)
@@ -49,7 +52,9 @@ abstract class BaseRepository
 
     /**
      * @param array $fields
+     *
      * @throws RepositoryException
+     *
      * @return Model
      */
     public function update($fields)
@@ -60,11 +65,13 @@ abstract class BaseRepository
         $original_fields = $fields;
         $fields = $this->beforeUpdate($fields);
         $this->save($fields);
+
         return $this->afterUpdate($original_fields, $fields);
     }
 
     /**
      * @param array $fields
+     *
      * @return array
      */
     protected function beforeUpdate($fields)
@@ -75,6 +82,7 @@ abstract class BaseRepository
     /**
      * @param array $original_fields
      * @param array $fields
+     *
      * @return Model
      */
     protected function afterUpdate($original_fields, $fields)
@@ -84,6 +92,7 @@ abstract class BaseRepository
 
     /**
      * @param array $fields
+     *
      * @return array
      */
     protected function beforeCreate($fields)
@@ -94,6 +103,7 @@ abstract class BaseRepository
     /**
      * @param array $original_fields
      * @param array $fields
+     *
      * @return Model
      */
     protected function afterCreate($original_fields, $fields)
@@ -127,9 +137,9 @@ abstract class BaseRepository
     /**
      * @param bool $permanent
      *
-     * @return bool|null
      * @throws RepositoryException
      *
+     * @return bool|null
      */
     public function destroy($permanent = false)
     {
@@ -155,7 +165,6 @@ abstract class BaseRepository
      * @param bool $persist
      *
      * @return $this
-     *
      */
     public function persist($persist = true)
     {
@@ -168,7 +177,6 @@ abstract class BaseRepository
      * @param bool $refresh
      *
      * @return $this
-     *
      */
     public function refresh($refresh = true)
     {
@@ -201,9 +209,9 @@ abstract class BaseRepository
     /**
      * @param array $fields
      *
-     * @return Model
      * @throws RepositoryException
      *
+     * @return Model
      */
     public function create($fields)
     {
@@ -213,6 +221,7 @@ abstract class BaseRepository
         $original_fields = $fields;
         $fields = $this->beforeCreate($fields);
         $this->save($fields);
+
         return $this->afterCreate($original_fields, $fields);
     }
 
@@ -287,16 +296,17 @@ abstract class BaseRepository
 
     /**
      * @param array $fields
+     *
      * @return Model
      *
      * Function that is not aware if the model is a new instance or already existing instance.
-     *
      */
     public function touch($fields)
     {
         $original_fields = $fields;
         $fields = $this->beforeSave($fields);
         $this->save($fields);
+
         return $this->afterSave($original_fields, $fields);
     }
 }

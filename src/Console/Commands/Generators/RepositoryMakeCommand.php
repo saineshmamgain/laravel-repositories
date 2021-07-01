@@ -87,7 +87,7 @@ class RepositoryMakeCommand extends GeneratorCommand
     {
         return is_file($customPath = $this->laravel->basePath(trim($stub, '/')))
             ? $customPath
-            : __DIR__ . '/../../../../' . $stub;
+            : __DIR__.'/../../../../'.$stub;
     }
 
     protected function getDefaultNamespace($rootNamespace)
@@ -118,7 +118,7 @@ class RepositoryMakeCommand extends GeneratorCommand
             throw new \Exception('Model '.$name.' doesn\'t exist');
         }
 
-        if (! app($fullyQualifiedModelNameSpace) instanceof Model){
+        if (!app($fullyQualifiedModelNameSpace) instanceof Model) {
             throw new \Exception('Model '.$name.' is not a valid model');
         }
 

@@ -7,19 +7,18 @@ namespace Tests;
  * Author: Sainesh Mamgain
  * Email: saineshmamgain@gmail.com
  * Date: 02/07/21
- * Time: 12:45 AM
+ * Time: 12:45 AM.
  */
-
 class ArtisanCommandTest extends TestCase
 {
     public function testItCreatesRepository()
     {
         $this->artisan('make:model', [
-            'name' => 'User'
+            'name' => 'User',
         ]);
 
         $this->artisan('make:repository', [
-            'model' => 'User'
+            'model' => 'User',
         ]);
 
         $this->assertTrue(file_exists(app_path('Repositories/UserRepository.php')));
@@ -31,7 +30,7 @@ class ArtisanCommandTest extends TestCase
         $this->expectExceptionMessage('Model Test doesn\'t exist');
 
         $this->artisan('make:repository', [
-            'model' => 'Test'
+            'model' => 'Test',
         ]);
     }
 
@@ -43,7 +42,7 @@ class ArtisanCommandTest extends TestCase
         file_put_contents(app_path('Models/Post.php'), '<?php namespace App\Models; class Post {}');
 
         $this->artisan('make:repository', [
-            'model' => 'Post'
+            'model' => 'Post',
         ]);
         unlink(app_path('Models/Post.php'));
     }
@@ -51,15 +50,15 @@ class ArtisanCommandTest extends TestCase
     public function testItThrowsErrorIfRepositoryAlreadyExists()
     {
         $this->artisan('make:model', [
-            'name' => 'User'
+            'name' => 'User',
         ]);
 
         $this->artisan('make:repository', [
-            'model' => 'User'
+            'model' => 'User',
         ]);
 
         $command = $this->artisan('make:repository', [
-            'model' => 'User'
+            'model' => 'User',
         ]);
 
         $command->expectsOutput('Repository already exists!');
