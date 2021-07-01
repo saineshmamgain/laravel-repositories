@@ -4,8 +4,6 @@ namespace Tests;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use SaineshMamgain\LaravelRepositories\Exceptions\RepositoryException;
 
 /**
@@ -13,19 +11,18 @@ use SaineshMamgain\LaravelRepositories\Exceptions\RepositoryException;
  * Author: Sainesh Mamgain
  * Email: saineshmamgain@gmail.com
  * Date: 02/07/21
- * Time: 2:02 AM
+ * Time: 2:02 AM.
  */
-
-class RepositoryTest extends TestCase {
-
+class RepositoryTest extends TestCase
+{
     public function testItCreatesARecord()
     {
         $this->createRepository();
 
         UserRepository::init()
             ->create([
-                'name' => 'John Doe',
-                'email' => 'john@example.com',
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
                 'password' => '123456',
             ]);
 
@@ -38,8 +35,8 @@ class RepositoryTest extends TestCase {
 
         $user = UserRepository::init()
             ->create([
-                'name' => 'John Doe',
-                'email' => 'john@example.com',
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
                 'password' => '123456',
             ]);
 
@@ -57,8 +54,8 @@ class RepositoryTest extends TestCase {
 
         $user = UserRepository::init()
             ->create([
-                'name' => 'John Doe',
-                'email' => 'john@example.com',
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
                 'password' => '123456',
             ]);
 
@@ -92,8 +89,8 @@ class RepositoryTest extends TestCase {
 
         $user = UserRepository::init()
             ->create([
-                'name' => 'John Doe',
-                'email' => 'john@example.com',
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
                 'password' => '123456',
             ]);
 
@@ -123,8 +120,8 @@ class RepositoryTest extends TestCase {
         UserRepository::init()
             ->persist(false)
             ->create([
-                'name' => 'John Doe',
-                'email' => 'john@example.com',
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
                 'password' => '123456',
             ]);
 
@@ -137,8 +134,8 @@ class RepositoryTest extends TestCase {
 
         UserRepository::init()
             ->create([
-                'name' => 'John Doe',
-                'email' => 'john@example.com',
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
                 'password' => '123456',
             ]);
 
@@ -146,7 +143,7 @@ class RepositoryTest extends TestCase {
 
         $user = UserRepository::init($user)
             ->update([
-                'email' => 'doe@example.com'
+                'email' => 'doe@example.com',
             ]);
 
         $this->assertEmpty($user->name);
@@ -154,7 +151,7 @@ class RepositoryTest extends TestCase {
         $user = UserRepository::init($user)
             ->refresh()
             ->update([
-                'email' => 'doe@example.com'
+                'email' => 'doe@example.com',
             ]);
 
         $this->assertNotEmpty($user->name);
@@ -169,15 +166,15 @@ class RepositoryTest extends TestCase {
         UserRepository::init()
             ->createMany([
                 [
-                    'name' => 'John Doe',
-                    'email' => 'john@example.com',
+                    'name'     => 'John Doe',
+                    'email'    => 'john@example.com',
                     'password' => '123456',
                 ],
                 [
-                    'name' => 'Doe John',
-                    'email' => 'doe@example.com',
+                    'name'     => 'Doe John',
+                    'email'    => 'doe@example.com',
                     'password' => '123456',
-                ]
+                ],
             ]);
 
         $this->assertDatabaseHas('users', ['email' => 'doe@example.com']);
@@ -187,11 +184,11 @@ class RepositoryTest extends TestCase {
     protected function createRepository()
     {
         $this->artisan('make:model', [
-            'name' => 'User'
+            'name' => 'User',
         ]);
 
         $this->artisan('make:repository', [
-            'model' => 'User'
+            'model' => 'User',
         ]);
     }
 }
