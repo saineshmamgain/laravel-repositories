@@ -63,10 +63,9 @@ class TestCase extends \Orchestra\Testbench\TestCase
     }
 }
 
-class UserModel extends User {
-
+class UserModel extends User
+{
     use SoftDeletes;
 
     protected $table = 'users';
-
 }
