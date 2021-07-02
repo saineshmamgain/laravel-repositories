@@ -4,8 +4,6 @@ namespace Tests;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use SaineshMamgain\LaravelRepositories\Exceptions\RepositoryException;
 
 /**
@@ -168,13 +166,13 @@ class RepositoryTest extends TestCase
         UserRepository::init()
             ->createMany([
                 [
-                    'name' => 'John Doe',
-                    'email' => 'john@example.com',
+                    'name'     => 'John Doe',
+                    'email'    => 'john@example.com',
                     'password' => '123456',
                 ],
                 [
-                    'name' => 'Doe John',
-                    'email' => 'doe@example.com',
+                    'name'     => 'Doe John',
+                    'email'    => 'doe@example.com',
                     'password' => '123456',
                 ],
             ]);
@@ -217,5 +215,4 @@ class RepositoryTest extends TestCase
 
         $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
     }
-
 }
