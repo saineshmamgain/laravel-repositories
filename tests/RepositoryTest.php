@@ -4,6 +4,8 @@ namespace Tests;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use SaineshMamgain\LaravelRepositories\Exceptions\RepositoryException;
 
 /**
@@ -166,13 +168,13 @@ class RepositoryTest extends TestCase
         UserRepository::init()
             ->createMany([
                 [
-                    'name'     => 'John Doe',
-                    'email'    => 'john@example.com',
+                    'name' => 'John Doe',
+                    'email' => 'john@example.com',
                     'password' => '123456',
                 ],
                 [
-                    'name'     => 'Doe John',
-                    'email'    => 'doe@example.com',
+                    'name' => 'Doe John',
+                    'email' => 'doe@example.com',
                     'password' => '123456',
                 ],
             ]);
@@ -181,14 +183,39 @@ class RepositoryTest extends TestCase
         $this->assertDatabaseHas('users', ['email' => 'john@example.com']);
     }
 
-    protected function createRepository()
+    public function testItSoftDeletesARecord()
     {
-        $this->artisan('make:model', [
-            'name' => 'User',
-        ]);
+        $this->createRepository();
 
-        $this->artisan('make:repository', [
-            'model' => 'User',
-        ]);
+        $user = UserRepository::init(new UserModel())
+            ->create([
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
+                'password' => '123456',
+            ]);
+
+        UserRepository::init($user)
+            ->destroy();
+
+        $this->assertDatabaseHas('users', ['email' => 'john@example.com']);
+        $this->assertNotEmpty($user->deleted_at);
     }
+
+    public function testItPermanentlyDeletesASoftDeletableRecord()
+    {
+        $this->createRepository();
+
+        $user = UserRepository::init(new UserModel())
+            ->create([
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
+                'password' => '123456',
+            ]);
+
+        UserRepository::init($user)
+            ->destroy(true);
+
+        $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
+    }
+
 }

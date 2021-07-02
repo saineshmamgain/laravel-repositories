@@ -2,6 +2,9 @@
 
 namespace Tests;
 
+use App\Models\User;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 /**
  * File: TestCase.php
  * Author: Sainesh Mamgain
@@ -47,4 +50,23 @@ class TestCase extends \Orchestra\Testbench\TestCase
     {
         $this->loadMigrationsFrom(__DIR__.'/database/migrations');
     }
+
+    protected function createRepository()
+    {
+        $this->artisan('make:model', [
+            'name' => 'User',
+        ]);
+
+        $this->artisan('make:repository', [
+            'model' => 'User',
+        ]);
+    }
+}
+
+class UserModel extends User {
+
+    use SoftDeletes;
+
+    protected $table = 'users';
+
 }
