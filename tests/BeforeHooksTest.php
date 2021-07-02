@@ -5,14 +5,14 @@ namespace Tests;
 use App\Repositories\UserRepository;
 
 /**
- * File: HooksTest.php
+ * File: BeforeHooksTest.php
  * Author: Sainesh Mamgain
  * Email: saineshmamgain@gmail.com
  * Date: 02/07/21
  * Time: 4:20 PM
  */
 
-class HooksTest extends TestCase
+class BeforeHooksTest extends TestCase
 {
     public function testItExecutesBeforeSaveMethodBeforeCreating()
     {
