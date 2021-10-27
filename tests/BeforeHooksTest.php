@@ -134,6 +134,7 @@ class BeforeHooksTest extends TestCase
 
         $this->assertDatabaseHas('users', ['name' => 'DELETED_john doe']);
     }
+
     public function testItExecutesBeforeSaveMethodBeforeNonPersistingTouch()
     {
         $this->createRepository();
@@ -167,7 +168,6 @@ class BeforeHooksTest extends TestCase
         $this->assertEquals($user->password, md5('123456'));
         $this->assertEquals($user->exists, true);
     }
-
 }
 
 class UserRepositoryTest extends UserRepository
