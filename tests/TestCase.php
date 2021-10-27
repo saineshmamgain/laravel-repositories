@@ -2,8 +2,6 @@
 
 namespace Tests;
 
-use App\Models\User;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**

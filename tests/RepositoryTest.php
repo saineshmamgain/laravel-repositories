@@ -4,7 +4,6 @@ namespace Tests;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use SaineshMamgain\LaravelRepositories\Exceptions\RepositoryException;
 
@@ -232,7 +231,7 @@ class RepositoryTest extends TestCase
         $user = UserRepository::init($user)
             ->persist(false)
             ->touch([
-                'email' => 'jason@example.com'
+                'email' => 'jason@example.com',
             ]);
 
         $this->assertDatabaseMissing('users', ['email' => 'jason@example.com']);
@@ -256,7 +255,7 @@ class RepositoryTest extends TestCase
         $user = UserRepository::init($user)
             ->persist(true)
             ->touch([
-                'email' => 'jason@example.com'
+                'email' => 'jason@example.com',
             ]);
 
         $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
@@ -273,7 +272,7 @@ class RepositoryTest extends TestCase
         $user = UserRepository::init()
             ->persist(false)
             ->touch([
-                'email' => 'jason@example.com'
+                'email' => 'jason@example.com',
             ]);
 
         $this->assertDatabaseMissing('users', ['email' => 'jason@example.com']);
@@ -291,7 +290,7 @@ class RepositoryTest extends TestCase
             ->touch([
                 'name'     => 'John Doe',
                 'password' => '123456',
-                'email' => 'jason@example.com'
+                'email'    => 'jason@example.com',
             ]);
 
         $this->assertDatabaseHas('users', ['email' => 'jason@example.com']);

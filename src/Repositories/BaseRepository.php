@@ -131,7 +131,7 @@ abstract class BaseRepository
             }
         }
 
-        if (!$this->model->exists){
+        if (!$this->model->exists) {
             return $this->model;
         }
 
