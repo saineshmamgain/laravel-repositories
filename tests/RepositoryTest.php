@@ -4,6 +4,8 @@ namespace Tests;
 
 use App\Models\User;
 use App\Repositories\UserRepository;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use SaineshMamgain\LaravelRepositories\Exceptions\RepositoryException;
 
 /**
@@ -215,4 +217,93 @@ class RepositoryTest extends TestCase
 
         $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
     }
+
+    public function testItTouchesAnExistingRecordWithoutPersisting()
+    {
+        $this->createRepository();
+
+        $user = UserRepository::init()
+            ->create([
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
+                'password' => '123456',
+            ]);
+
+        $user = UserRepository::init($user)
+            ->persist(false)
+            ->touch([
+                'email' => 'jason@example.com'
+            ]);
+
+        $this->assertDatabaseMissing('users', ['email' => 'jason@example.com']);
+        $this->assertDatabaseHas('users', ['email' => 'john@example.com']);
+        $this->assertEquals($user->email, 'jason@example.com');
+        $this->assertEquals($user->exists, true);
+        $this->assertEquals($user->getDirty(), ['email' => 'jason@example.com']);
+    }
+
+    public function testItTouchesAnExistingRecordWithPersisting()
+    {
+        $this->createRepository();
+
+        $user = UserRepository::init()
+            ->create([
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
+                'password' => '123456',
+            ]);
+
+        $user = UserRepository::init($user)
+            ->persist(true)
+            ->touch([
+                'email' => 'jason@example.com'
+            ]);
+
+        $this->assertDatabaseMissing('users', ['email' => 'john@example.com']);
+        $this->assertDatabaseHas('users', ['email' => 'jason@example.com']);
+        $this->assertEquals($user->email, 'jason@example.com');
+        $this->assertEquals($user->exists, true);
+        $this->assertEquals($user->getDirty(), []);
+    }
+
+    public function testItTouchesANonExistingRecordWithoutPersisting()
+    {
+        $this->createRepository();
+
+        $user = UserRepository::init()
+            ->persist(false)
+            ->touch([
+                'email' => 'jason@example.com'
+            ]);
+
+        $this->assertDatabaseMissing('users', ['email' => 'jason@example.com']);
+        $this->assertEquals($user->email, 'jason@example.com');
+        $this->assertEquals($user->exists, false);
+        $this->assertEquals($user->getDirty(), ['email' => 'jason@example.com']);
+    }
+
+    public function testItTouchesANonExistingRecordWithPersisting()
+    {
+        $this->createRepository();
+
+        $user = UserRepository::init()
+            ->persist(true)
+            ->touch([
+                'name'     => 'John Doe',
+                'password' => '123456',
+                'email' => 'jason@example.com'
+            ]);
+
+        $this->assertDatabaseHas('users', ['email' => 'jason@example.com']);
+        $this->assertEquals($user->email, 'jason@example.com');
+        $this->assertEquals($user->exists, true);
+        $this->assertEquals($user->getDirty(), []);
+    }
+}
+
+class UserModel extends User
+{
+    use SoftDeletes;
+
+    protected $table = 'users';
 }

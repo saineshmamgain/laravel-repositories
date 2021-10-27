@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
 /**
  * File: TestCase.php
@@ -14,18 +15,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  */
 class TestCase extends \Orchestra\Testbench\TestCase
 {
+    use RefreshDatabase;
+
     protected function setUp(): void
     {
         parent::setUp();
-
-        if (file_exists(app_path('Models/User.php'))) {
-            unlink(app_path('Models/User.php'));
-        }
-
-        if (file_exists(app_path('Repositories/UserRepository.php'))) {
-            unlink(app_path('Repositories/UserRepository.php'));
-            rmdir(app_path('Repositories'));
-        }
+        $this->createRepository();
+        $this->createDetailsRepository();
     }
 
     protected function getPackageProviders($app)
@@ -61,11 +57,15 @@ class TestCase extends \Orchestra\Testbench\TestCase
             'model' => 'User',
         ]);
     }
-}
 
-class UserModel extends User
-{
-    use SoftDeletes;
+    protected function createDetailsRepository()
+    {
+        $this->artisan('make:model', [
+            'name' => 'UserDetail',
+        ]);
 
-    protected $table = 'users';
+        $this->artisan('make:repository', [
+            'model' => 'UserDetail',
+        ]);
+    }
 }

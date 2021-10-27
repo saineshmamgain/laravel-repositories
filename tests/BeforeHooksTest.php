@@ -2,7 +2,9 @@
 
 namespace Tests;
 
+use App\Models\User;
 use App\Repositories\UserRepository;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
  * File: BeforeHooksTest.php
@@ -120,7 +122,7 @@ class BeforeHooksTest extends TestCase
     {
         $this->createRepository();
 
-        $user = UserRepository::init(new UserModel())
+        $user = UserRepository::init(new UserModelTest())
             ->create([
                 'name'     => 'john doe',
                 'email'    => 'john@example.com',
@@ -132,6 +134,40 @@ class BeforeHooksTest extends TestCase
 
         $this->assertDatabaseHas('users', ['name' => 'DELETED_john doe']);
     }
+    public function testItExecutesBeforeSaveMethodBeforeNonPersistingTouch()
+    {
+        $this->createRepository();
+
+        $user = UserRepositoryTest::init()
+            ->persist(false)
+            ->touch([
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
+                'password' => '123456',
+            ]);
+
+        $this->assertDatabaseMissing('users', ['password' => md5('123456')]);
+        $this->assertEquals($user->password, md5('123456'));
+        $this->assertEquals($user->exists, false);
+    }
+
+    public function testItExecutesBeforeSaveMethodBeforePersistingTouch()
+    {
+        $this->createRepository();
+
+        $user = UserRepositoryTest::init()
+            ->persist(true)
+            ->touch([
+                'name'     => 'John Doe',
+                'email'    => 'john@example.com',
+                'password' => '123456',
+            ]);
+
+        $this->assertDatabaseHas('users', ['password' => md5('123456')]);
+        $this->assertEquals($user->password, md5('123456'));
+        $this->assertEquals($user->exists, true);
+    }
+
 }
 
 class UserRepositoryTest extends UserRepository
@@ -174,4 +210,11 @@ class UserRepositoryTest extends UserRepository
 
         return $this->model;
     }
+}
+
+class UserModelTest extends User
+{
+    use SoftDeletes;
+
+    protected $table = 'users';
 }

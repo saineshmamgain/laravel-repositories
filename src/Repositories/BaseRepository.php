@@ -116,7 +116,7 @@ abstract class BaseRepository
      *
      * @return Model
      */
-    public function save($fields)
+    protected function save($fields)
     {
         $original_fields = $fields;
         $fields = $this->beforeSave($fields);
@@ -129,6 +129,10 @@ abstract class BaseRepository
             if ($this->refresh) {
                 $this->model->refresh();
             }
+        }
+
+        if (!$this->model->exists){
+            return $this->model;
         }
 
         return $this->afterSave($original_fields, $fields);
@@ -303,10 +307,6 @@ abstract class BaseRepository
      */
     public function touch($fields)
     {
-        $original_fields = $fields;
-        $fields = $this->beforeSave($fields);
-        $this->save($fields);
-
-        return $this->afterSave($original_fields, $fields);
+        return $this->save($fields);
     }
 }
