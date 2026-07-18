@@ -44,22 +44,22 @@ jobs:
             stability: prefer-stable
             experimental: false
           - php: '8.3'
-            laravel: '^13.0'
+            laravel: '^13.12'
             testbench: '^11.0'
             stability: prefer-lowest
             experimental: false
           - php: '8.3'
-            laravel: '^13.0'
+            laravel: '^13.12'
             testbench: '^11.0'
             stability: prefer-stable
             experimental: false
           - php: '8.4'
-            laravel: '^13.0'
+            laravel: '^13.12'
             testbench: '^11.0'
             stability: prefer-stable
             experimental: false
           - php: '8.5'
-            laravel: '^13.0'
+            laravel: '^13.12'
             testbench: '^11.0'
             stability: prefer-stable
             experimental: true
@@ -93,7 +93,7 @@ jobs:
 
   quality:
     runs-on: ubuntu-latest
-    name: Quality - PHP 8.4 - Laravel ^13.0
+    name: Quality - PHP 8.4 - Laravel ^13.12
 
     steps:
       - name: Checkout code
@@ -111,7 +111,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:^13.0" "orchestra/testbench:^11.0" --dev --no-interaction --no-update
+          composer require "laravel/framework:^13.12" "orchestra/testbench:^11.0" --dev --no-interaction --no-update
           composer update --prefer-stable --prefer-dist --no-interaction
 
       - name: Audit dependencies
