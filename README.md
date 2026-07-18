@@ -8,7 +8,7 @@ Laravel Repositories is a small Laravel package for creating simple repository c
 ## Requirements
 
 - PHP `^8.3`
-- Laravel `^11.0|^12.0|^13.12`
+- Laravel `^12.0|^13.12`
 
 ## Installation
 

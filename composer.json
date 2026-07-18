@@ -22,9 +22,9 @@
     ],
     "require": {
         "php": "^8.3",
-        "illuminate/support": "^11.0|^12.0|^13.12",
-        "illuminate/database": "^11.0|^12.0|^13.12",
-        "illuminate/console": "^11.0|^12.0|^13.12"
+        "illuminate/support": "^12.0|^13.12",
+        "illuminate/database": "^12.0|^13.12",
+        "illuminate/console": "^12.0|^13.12"
     },
     "autoload": {
         "psr-4": {
@@ -48,7 +48,7 @@
         "larastan/larastan": "^3.0",
         "laravel/pint": "^1.0",
         "nunomaduro/collision": "^8.0|^9.0",
-        "orchestra/testbench": "^9.0|^10.0|^11.0",
+        "orchestra/testbench": "^10.0|^11.0",
         "phpstan/phpstan": "^2.0",
         "phpunit/phpunit": "^10.5|^11.5|^12.0",
         "rector/rector": "^2.0"
