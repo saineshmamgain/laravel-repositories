@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace SaineshMamgain\LaravelRepositories;
 
 use Illuminate\Support\ServiceProvider;
@@ -14,7 +16,7 @@ use SaineshMamgain\LaravelRepositories\Console\Commands\Generators\RepositoryMak
  */
 class LaravelRepositoryServiceProvider extends ServiceProvider
 {
-    public function boot()
+    public function boot(): void
     {
         $this->app->bind('command.laravel-repositories.make.repository', RepositoryMakeCommand::class);
         $this->commands(['command.laravel-repositories.make.repository']);

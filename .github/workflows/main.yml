@@ -1,41 +1,92 @@
 name: Tests
 
-on: [pull_request]
+on:
+  pull_request:
+  push:
 
 jobs:
   test:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      fail-fast: true
-      matrix:
-        os: [ubuntu-latest]
-        php: [8.0]
-        laravel: [8.*]
-        stability: [prefer-lowest, prefer-stable]
-        include:
-          - laravel: 8.*
-            testbench: 6.18
+    runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.experimental }}
 
-    name: P${{ matrix.php }} - L${{ matrix.laravel }} - ${{ matrix.stability }} - ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '8.3'
+            laravel: '^11.0'
+            testbench: '^9.0'
+            stability: prefer-lowest
+            experimental: false
+          - php: '8.3'
+            laravel: '^11.0'
+            testbench: '^9.0'
+            stability: prefer-stable
+            experimental: false
+          - php: '8.4'
+            laravel: '^11.0'
+            testbench: '^9.0'
+            stability: prefer-stable
+            experimental: false
+          - php: '8.3'
+            laravel: '^12.0'
+            testbench: '^10.0'
+            stability: prefer-lowest
+            experimental: false
+          - php: '8.3'
+            laravel: '^12.0'
+            testbench: '^10.0'
+            stability: prefer-stable
+            experimental: false
+          - php: '8.4'
+            laravel: '^12.0'
+            testbench: '^10.0'
+            stability: prefer-stable
+            experimental: false
+          - php: '8.3'
+            laravel: '^13.0'
+            testbench: '^11.0'
+            stability: prefer-lowest
+            experimental: false
+          - php: '8.3'
+            laravel: '^13.0'
+            testbench: '^11.0'
+            stability: prefer-stable
+            experimental: false
+          - php: '8.4'
+            laravel: '^13.0'
+            testbench: '^11.0'
+            stability: prefer-stable
+            experimental: false
+          - php: '8.5'
+            laravel: '^13.0'
+            testbench: '^11.0'
+            stability: prefer-stable
+            experimental: true
+
+    name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.stability }}
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
+          extensions: dom, curl, libxml, mbstring, zip, pdo_sqlite, sqlite, fileinfo
           coverage: none
 
-      - name: Setup problem matchers
-        run: |
-          echo "::add-matcher::${{ runner.tool_cache }}/php.json"
-          echo "::add-matcher::${{ runner.tool_cache }}/phpunit.json"
+      - name: Validate composer.json
+        run: composer validate --strict
+
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-interaction --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --dev --no-interaction --no-update
           composer update --${{ matrix.stability }} --prefer-dist --no-interaction
+
+      - name: Audit dependencies
+        run: composer audit
+
       - name: Execute tests
-        run: vendor/bin/phpunit
+        run: composer test

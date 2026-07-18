@@ -4,7 +4,8 @@ namespace SaineshMamgain\LaravelRepositories\Console\Commands\Generators;
 
 use Illuminate\Console\GeneratorCommand;
 use Illuminate\Database\Eloquent\Model;
-use Symfony\Component\Console\Input\InputOption;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
 
 /**
  * File: RepositoryMakeCommand.php
@@ -20,7 +21,7 @@ class RepositoryMakeCommand extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'make:repository {model}';
+    protected $signature = 'make:repository {model : The Eloquent model class} {--f|force : Create the class even if the repository already exists}';
 
     /**
      * The console command description.
@@ -37,45 +38,23 @@ class RepositoryMakeCommand extends GeneratorCommand
     protected $type = 'Repository';
 
     /**
-     * The name of repository being generated.
+     * The model class for which the repository is being generated.
      *
-     * @var string
+     * @var class-string<Model>
      */
-    private $repositoryClass;
+    private string $modelClass;
 
     /**
-     * The name of model for which repository is being generated.
+     * Execute the console command.
      *
-     * @var string
+     * @return bool|null
      */
-    private $model;
-
-    /**
-     * The full namespace of model for which repository is being generated.
-     *
-     * @var string
-     */
-    private $modelNameSpace;
-
+    #[\Override]
     public function handle()
     {
-        $this->setRepositoryClass();
+        $this->setModelClass();
 
-        $path = $this->getPath($this->repositoryClass);
-
-        if ($this->alreadyExists($this->repositoryClass)) {
-            $this->error($this->type.' already exists!');
-
-            return false;
-        }
-
-        $this->makeDirectory($path);
-
-        $this->files->put($path, $this->buildClass($this->repositoryClass));
-
-        $this->info($this->type.' created successfully.');
-
-        $this->line("<info>Created Repository :</info> $this->repositoryClass");
+        return parent::handle();
     }
 
     protected function getStub()
@@ -85,67 +64,96 @@ class RepositoryMakeCommand extends GeneratorCommand
 
     protected function resolveStubPath($stub)
     {
-        return is_file($customPath = $this->laravel->basePath(trim($stub, '/')))
+        return is_file($customPath = $this->laravel->basePath(trim((string) $stub, '/')))
             ? $customPath
             : __DIR__.'/../../../../'.$stub;
     }
 
+    #[\Override]
     protected function getDefaultNamespace($rootNamespace)
     {
         return $rootNamespace.'\Repositories';
     }
 
-    protected function getOptions()
+    #[\Override]
+    protected function getNameInput()
     {
-        return [
-            ['model', InputOption::VALUE_REQUIRED, 'The name of Model Class'],
-        ];
+        return $this->repositoryNameFromModel();
     }
 
-    private function setRepositoryClass()
+    private function setModelClass(): void
     {
-        $name = $this->argument('model');
+        $model = $this->modelNameInput();
+        $this->guardAgainstInvalidModelName($model);
 
-        $name = str_ireplace(['repository', 'Repository'], '', $name);
+        $modelClass = $this->qualifyModel($model);
 
-        $fullyQualifiedModelNameSpace = '';
-
-        if (file_exists(app_path('Models/'.$name.'.php'))) {
-            $fullyQualifiedModelNameSpace = $this->qualifyModel($name);
+        if (! class_exists($modelClass)) {
+            throw new InvalidArgumentException(sprintf('Model [%s] does not exist.', $modelClass));
         }
 
-        if (empty($fullyQualifiedModelNameSpace)) {
-            throw new \Exception('Model '.$name.' doesn\'t exist');
+        if (! is_a($modelClass, Model::class, true)) {
+            throw new InvalidArgumentException(sprintf('Model [%s] is not an Eloquent model.', $modelClass));
         }
 
-        if (!app($fullyQualifiedModelNameSpace) instanceof Model) {
-            throw new \Exception('Model '.$name.' is not a valid model');
+        $this->modelClass = $modelClass;
+    }
+
+    private function modelNameInput(): string
+    {
+        $model = trim($this->argument('model'));
+
+        if (str_ends_with($model, '.php')) {
+            $model = substr($model, 0, -4);
         }
 
-        $this->model = $name;
-        $this->modelNameSpace = $fullyQualifiedModelNameSpace;
-
-        $modelClass = $this->qualifyClass($name);
-
-        $this->repositoryClass = $modelClass.'Repository';
-
-        return $this;
+        return preg_replace('/Repository$/i', '', $model) ?: $model;
     }
 
     /**
      * Replace the class name for the given stub.
      *
-     * @param string $stub
-     * @param string $name
-     *
+     * @param  string  $stub
+     * @param  string  $name
      * @return string
      */
+    #[\Override]
     protected function replaceClass($stub, $name)
     {
         $stub = parent::replaceClass($stub, $name);
 
-        $stub = str_replace('{{DummyModel}}', $this->model, $stub);
+        $replace = [
+            '{{ namespacedModel }}' => $this->modelClass,
+            '{{namespacedModel}}' => $this->modelClass,
+            '{{ model }}' => class_basename($this->modelClass),
+            '{{model}}' => class_basename($this->modelClass),
+        ];
 
-        return str_replace('{{DummyModelNamespace}}', $this->modelNameSpace, $stub);
+        return str_replace(array_keys($replace), array_values($replace), $stub);
+    }
+
+    private function repositoryNameFromModel(): string
+    {
+        $model = $this->modelNameInput();
+        $this->guardAgainstInvalidModelName($model);
+
+        $model = trim(str_replace('\\', '/', $model), '/');
+        $rootNamespace = trim(str_replace('\\', '/', $this->rootNamespace()), '/');
+        $modelsNamespace = $rootNamespace.'/Models/';
+
+        if (Str::startsWith($model, $modelsNamespace)) {
+            $model = Str::after($model, $modelsNamespace);
+        } elseif (Str::startsWith($model, $rootNamespace.'/')) {
+            $model = Str::after($model, $rootNamespace.'/');
+        }
+
+        return $model.'Repository';
+    }
+
+    private function guardAgainstInvalidModelName(string $model): void
+    {
+        if ($model === '' || preg_match('/[^A-Za-z0-9_\/\\\\]/', $model)) {
+            throw new InvalidArgumentException('Model name contains invalid characters.');
+        }
     }
 }
