@@ -5,8 +5,14 @@ namespace {{ namespace }};
 use {{ namespacedModel }};
 use SaineshMamgain\LaravelRepositories\Repositories\Repository;
 
+/**
+ * @extends Repository<{{ model }}>
+ */
 class {{ class }} extends Repository
 {
+    /**
+     * @return class-string<{{ model }}>
+     */
     protected function model(): string
     {
         return {{ model }}::class;

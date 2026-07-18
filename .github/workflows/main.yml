@@ -90,3 +90,38 @@ jobs:
 
       - name: Execute tests
         run: composer test
+
+  quality:
+    runs-on: ubuntu-latest
+    name: Quality - PHP 8.4 - Laravel ^13.0
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: dom, curl, libxml, mbstring, zip, pdo_sqlite, sqlite, fileinfo
+          coverage: none
+
+      - name: Validate composer.json
+        run: composer validate --strict
+
+      - name: Install dependencies
+        run: |
+          composer require "laravel/framework:^13.0" "orchestra/testbench:^11.0" --dev --no-interaction --no-update
+          composer update --prefer-stable --prefer-dist --no-interaction
+
+      - name: Audit dependencies
+        run: composer audit
+
+      - name: Check formatting
+        run: composer format:test
+
+      - name: Check Rector
+        run: composer rector:test
+
+      - name: Analyse code
+        run: composer analyse

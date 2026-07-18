@@ -12,6 +12,9 @@ use Tests\Fixtures\Models\User;
  */
 class UserRepository extends Repository
 {
+    /**
+     * @return class-string<User>
+     */
     protected function model(): string
     {
         return User::class;

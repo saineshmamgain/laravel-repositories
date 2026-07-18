@@ -12,6 +12,9 @@ use Tests\Fixtures\Models\UserDetail;
  */
 class UserDetailRepository extends Repository
 {
+    /**
+     * @return class-string<UserDetail>
+     */
     protected function model(): string
     {
         return UserDetail::class;

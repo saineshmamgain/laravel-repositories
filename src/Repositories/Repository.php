@@ -30,18 +30,26 @@ abstract class Repository implements RepositoryInterface
      */
     public function query(): Builder
     {
-        return $this->newModel()->newQuery();
+        /** @var Builder<TModel> $query */
+        $query = $this->newModel()->newQuery();
+
+        return $query;
     }
 
     /**
+     * @param  list<string>  $columns
      * @return Collection<int, TModel>
      */
     public function all(array $columns = ['*']): Collection
     {
-        return $this->query()->get($columns);
+        /** @var Collection<int, TModel> $models */
+        $models = $this->query()->get($columns);
+
+        return $models;
     }
 
     /**
+     * @param  list<string>  $columns
      * @return TModel|null
      */
     public function find(int|string $id, array $columns = ['*']): ?Model
@@ -50,6 +58,7 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
+     * @param  list<string>  $columns
      * @return TModel
      */
     public function findOrFail(int|string $id, array $columns = ['*']): Model
@@ -58,6 +67,7 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
+     * @param  array<string, mixed>  $attributes
      * @return TModel
      */
     public function create(array $attributes): Model
@@ -92,6 +102,7 @@ abstract class Repository implements RepositoryInterface
     }
 
     /**
+     * @param  array<string, mixed>  $attributes
      * @return TModel
      */
     public function update(Model|int|string $model, array $attributes): Model
@@ -149,17 +160,24 @@ abstract class Repository implements RepositoryInterface
         }
 
         $model = $this->resolveModel($model, withTrashed: true);
+        /** @phpstan-ignore method.notFound (SoftDeletes is verified at runtime before restore is called.) */
         $model->restore();
 
         return $this->afterRestore($model);
     }
 
+    /**
+     * @param  array<string, mixed>  $attributes
+     * @return array<string, mixed>
+     */
     protected function beforeCreate(array $attributes): array
     {
         return $attributes;
     }
 
     /**
+     * @param  array<string, mixed>  $originalAttributes
+     * @param  array<string, mixed>  $savedAttributes
      * @return TModel
      */
     protected function afterCreate(Model $model, array $originalAttributes, array $savedAttributes): Model
@@ -167,12 +185,18 @@ abstract class Repository implements RepositoryInterface
         return $model;
     }
 
+    /**
+     * @param  array<string, mixed>  $attributes
+     * @return array<string, mixed>
+     */
     protected function beforeUpdate(Model $model, array $attributes): array
     {
         return $attributes;
     }
 
     /**
+     * @param  array<string, mixed>  $originalAttributes
+     * @param  array<string, mixed>  $savedAttributes
      * @return TModel
      */
     protected function afterUpdate(Model $model, array $originalAttributes, array $savedAttributes): Model
@@ -180,12 +204,18 @@ abstract class Repository implements RepositoryInterface
         return $model;
     }
 
+    /**
+     * @param  array<string, mixed>  $attributes
+     * @return array<string, mixed>
+     */
     protected function beforeSave(Model $model, array $attributes): array
     {
         return $attributes;
     }
 
     /**
+     * @param  array<string, mixed>  $originalAttributes
+     * @param  array<string, mixed>  $savedAttributes
      * @return TModel
      */
     protected function afterSave(Model $model, array $originalAttributes, array $savedAttributes): Model
@@ -267,6 +297,7 @@ abstract class Repository implements RepositoryInterface
         $query = $this->query();
 
         if ($withTrashed && $this->supportsSoftDeletes()) {
+            /** @phpstan-ignore method.notFound (SoftDeletes is verified at runtime before withTrashed is called.) */
             $query->withTrashed();
         }
 
@@ -284,6 +315,7 @@ abstract class Repository implements RepositoryInterface
 
         $modelClass = $this->model();
 
+        /** @phpstan-ignore function.alreadyNarrowedType (Runtime validation protects intentionally invalid repository implementations.) */
         if (! is_a($modelClass, Model::class, true)) {
             throw new RepositoryException(sprintf(
                 'Repository model [%s] must be an instance of [%s].',

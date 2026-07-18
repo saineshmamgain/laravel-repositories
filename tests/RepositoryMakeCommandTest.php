@@ -44,7 +44,8 @@ class RepositoryMakeCommandTest extends TestCase
         $this->assertFileExists($path);
         $this->assertStringContainsString('namespace App\Repositories;', $this->files->get($path));
         $this->assertStringContainsString('use App\Models\User;', $this->files->get($path));
-        $this->assertStringContainsString('extends Repository', $this->files->get($path));
+        $this->assertStringContainsString('@extends Repository<User>', $this->files->get($path));
+        $this->assertStringContainsString('@return class-string<User>', $this->files->get($path));
         $this->assertStringContainsString('return User::class;', $this->files->get($path));
     }
 

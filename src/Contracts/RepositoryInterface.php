@@ -19,21 +19,25 @@ interface RepositoryInterface
     public function query(): Builder;
 
     /**
+     * @param  list<string>  $columns
      * @return Collection<int, TModel>
      */
     public function all(array $columns = ['*']): Collection;
 
     /**
+     * @param  list<string>  $columns
      * @return TModel|null
      */
     public function find(int|string $id, array $columns = ['*']): ?Model;
 
     /**
+     * @param  list<string>  $columns
      * @return TModel
      */
     public function findOrFail(int|string $id, array $columns = ['*']): Model;
 
     /**
+     * @param  array<string, mixed>  $attributes
      * @return TModel
      */
     public function create(array $attributes): Model;
@@ -45,6 +49,7 @@ interface RepositoryInterface
     public function createMany(iterable $records): Collection;
 
     /**
+     * @param  array<string, mixed>  $attributes
      * @return TModel
      */
     public function update(Model|int|string $model, array $attributes): Model;
